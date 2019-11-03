@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -46,8 +45,12 @@ public class Mechanisms extends SubsystemBase {
     crossbow.set(speed);
   }
 
-  public void setIntake(double speed) {
-    intake.set(speed);
+  public void setIntake(boolean button_1, boolean button_2) {
+    if(button_1) {
+      intake.set(0.6);
+    } else if(button_2) {
+      intake.set(-1);
+    } else intake.set(0);
   }
 
   public void pullIntake(Value value) {

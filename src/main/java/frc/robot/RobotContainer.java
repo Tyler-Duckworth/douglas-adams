@@ -10,14 +10,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.commands.Crossbow;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.PullIntake;
+import frc.robot.commands.TestGroup;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Mechanisms;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -29,12 +29,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Drivetrain drivetrain = new Drivetrain();
   private final Mechanisms mechanisms = new Mechanisms();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   
   private Joystick m_controller = new Joystick(0);
+  private RunCommand c_joystick = new RunCommand(
+    () -> drivetrain.driveCartesian(m_controller.getX() * -1,
+      m_controller.getY() * -1,
+      m_controller.getTwist()), drivetrain);
+
+  private RunCommand c_shooter = new RunCommand(
+    () -> mechanisms.setIntake(m_controller.getRawButton(7), m_controller.getRawButton(8)), mechanisms);
   
 
   /**
@@ -43,11 +48,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    drivetrain.setDefaultCommand(
-      new RunCommand(() -> drivetrain
-      .driveCartesian(m_controller.getX() * -1,
-          m_controller.getY() * -1,
-          m_controller.getTwist()), drivetrain));
+    drivetrain.setDefaultCommand(c_joystick);
+    mechanisms.setDefaultCommand(c_shooter);
   }
 
   /**
@@ -59,6 +61,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_controller, 5).whenPressed(new Crossbow(mechanisms, 0.8, 1000));
     new JoystickButton(m_controller, 6).whenPressed(new Crossbow(mechanisms, -0.6, 1750));
+    new JoystickButton(m_controller, 4).whenPressed(new PullIntake(mechanisms));
   }
 
 
@@ -69,6 +72,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new TestGroup(mechanisms, drivetrain, m_controller);
   }
 }

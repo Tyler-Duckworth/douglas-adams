@@ -7,42 +7,39 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Mechanisms;
 
-public class Crossbow extends CommandBase {
-  private final Mechanisms crossbow;
-  private long startTime, length;
-  private double speed;
-  public Crossbow(Mechanisms _crossbow, double _speed, long _length) {
-    crossbow = _crossbow;
-    length = _length;
-    speed = _speed;
+public class PullIntake extends CommandBase {
+  private final Mechanisms intake;
+  private boolean defaultValue;
+  public PullIntake(Mechanisms _intake) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    addRequirements(crossbow);
+    intake = _intake;
+    defaultValue = false;
+    addRequirements(intake);
   }
 
-  // Called just before this Command runs the first time
   @Override
   public void initialize() {
-    startTime = System.currentTimeMillis();
+    intake.pullIntake(Value.kOff);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   public void execute() {
-    crossbow.setCrossbow(speed);
+    if(defaultValue) {
+      intake.pullIntake(Value.kForward);
+    } else intake.pullIntake(Value.kReverse);
+
+    defaultValue = !defaultValue;
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   public boolean isFinished() {
-    return (System.currentTimeMillis() - startTime) >= length;
-  }
-  
-  @Override
-  public void end(boolean interrupted) {
-    crossbow.setCrossbow(0.0);
+    return true;
   }
 }
