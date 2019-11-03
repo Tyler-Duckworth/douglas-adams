@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -23,7 +24,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
  *  This is just a straight port of the Python code.
  *  If we go back through this looking to optimize it, we will probably remove some of this.
  */
-public class Mechanisms extends Subsystem {
+public class Mechanisms extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
@@ -66,9 +67,9 @@ public class Mechanisms extends Subsystem {
     return !prevState;
   }
 
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+  // @Override
+  // public void initDefaultCommand() {
+  //   // Set the default command for a subsystem here.
+  //   // setDefaultCommand(new MySpecialCommand());
+  // }
 }

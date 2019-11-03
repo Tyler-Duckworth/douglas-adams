@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import frc.robot.commands.Crossbow;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Drivetrain;
@@ -17,6 +19,7 @@ import frc.robot.subsystems.Mechanisms;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -30,8 +33,9 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   private final Mechanisms mechanisms = new Mechanisms();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  
   private Joystick m_controller = new Joystick(0);
+  
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -40,11 +44,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     drivetrain.setDefaultCommand(
-      // new RunCommand(() -> drivetrain.driveCartesian(
-      //   m_controller.getX() * -1,
-      //   m_controller.getY() * -1,
-      //   m_controller.getTwist()), 
-      //   drivetrain)
       new RunCommand(() -> drivetrain
       .driveCartesian(m_controller.getX() * -1,
           m_controller.getY() * -1,
@@ -58,6 +57,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(m_controller, 5).whenPressed(new Crossbow(mechanisms, 0.8, 1000));
+    new JoystickButton(m_controller, 6).whenPressed(new Crossbow(mechanisms, -0.6, 1750));
   }
 
 
